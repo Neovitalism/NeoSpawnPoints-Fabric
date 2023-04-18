@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "neospawnpoints",
+  "version": "${version}",
+
+  "name": "NeoSpawnPoints",
+  "description": "A simple multiple-spawn manager plugin based on weight.",
+  "authors": [
+    "Neovitalism"
+  ],
+  "contact": {
+    "homepage": "https://discord.gg/fQXCccxMrD"
+  },
+
+  "license": "MIT",
+  "icon": "assets/neospawnpoints/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.neovitalism.neospawnpoints.NeoSpawnPoints"
+    ]
+  },
+
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "fabric-api": "*",
+    "minecraft": "~1.19",
+    "java": ">=17",
+    "neoapi": ">=0.6.8"
+  },
+
+  "suggests": {
+    "luckperms": ">=5.4.67"
+  }
+}

@@ -1,0 +1,33 @@
+First-Join-Spawn: ''
+# The spawn players will teleport to when they join for the first time. Leave blank to disable.
+
+Spawn-No-Respawn: true
+# Whether or not players get teleported to their spawn when they die and have no other spawn point.
+# This may interfere with some plugins similar features, like setting /home to their spawnpoint. Let me know if it does.
+
+Force-Spawn-On-Death: false
+# Whether or not the player will get teleported to their spawn no matter what on death.
+
+Force-Spawn-On-Join: false
+# Whether or not the player will always be teleported to their spawn on join.
+
+Lang:
+# Remove any key or set any message to "" to disable that message.
+  Prefix: '&#696969[&#9632faN&#9831efe&#9a30e4o&#9b2ed9S&#9d2dcep&#9f2cc3a&#a12bb8w&#a229adn&#a428a2P&#a62797o&#a8268ci&#a92481n&#ab2376t&#ad226bs&#696969]&f '
+  Invalid-Spawn-Point: "&c'&4{input}&c' is not a valid spawn! Try using one from tab complete."
+  Invalid-Player: "&c'&4{input}&c' is not a valid player. Make sure they're online!"
+  Invalid-Permission-Spawn-All: "&cYou don't have permission to teleport everyone to spawn!"
+  Spawn-Already-Exists: "&cSpawn '&4{input}&c' already exists! Try using another name!"
+  Spawn-Created: "&aCreated Spawn {spawn} at {x}, {y}, {z} in world {world} with a priority of {priority}!"
+  Spawn-Deleted: "&cSuccessfully deleted spawn: &4{spawn}&c."
+  No-Spawn-Message: '&cYou have no active spawn point!'
+  Teleported-Message: '&aTeleported to x:{x} y:{y} z:{z} in world {world}!'
+  No-Spawn-Message-Admin: '&c{player} has no specific spawn point!'
+  Force-Spawn-Message-Admin: '&aYou sent {player} to their spawn!'
+  Force-Specific-Spawn-Admin: '&aYou sent {player} to the spawn point: {spawn}'
+  Force-Spawn-Message-Player: '&aYou have been sent to spawn!'
+  Force-Specific-Spawn-Player: '&aYou have been sent to {spawn}!'
+  Teleported-All-Spawn-Admin: "&aSuccessfully teleported {succeeded}/{amount} players to their spawn."
+  Teleported-All-Specific-Spawn-Admin: "&aSuccessfully teleported {amount} players to spawn point: {spawn}."
+
+
