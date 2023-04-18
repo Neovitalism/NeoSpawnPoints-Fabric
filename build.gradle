@@ -7,7 +7,7 @@ sourceCompatibility = JavaVersion.VERSION_17
 targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = 'NeoSpawnPoints'
-version = '1.0.2'
+version = '1.0.3'
 group = 'me.neovitalism.neospawnpoints'
 
 repositories {
@@ -21,7 +21,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation 'net.kyori:adventure-text-minimessage:4.13.0'
     modImplementation "net.kyori:adventure-platform-fabric:5.5.1"
-    modImplementation include(files('libs/NeoAPI-1.0.5.jar'))
+    modImplementation include(files('libs/NeoAPI-1.0.8.jar'))
     compileOnly 'net.luckperms:api:5.4'
 }
 
@@ -47,5 +47,5 @@ jar {
 }
 
 remapJar {
-    nestedJars.from file("libs/NeoAPI-1.0.5.jar")
+    nestedJars.from file("libs/NeoAPI-1.0.8.jar")
 }

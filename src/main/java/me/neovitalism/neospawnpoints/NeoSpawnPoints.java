@@ -1,6 +1,6 @@
 package me.neovitalism.neospawnpoints;
 
-import me.neovitalism.neoapi.events.FirstJoinEvent;
+import me.neovitalism.neoapi.events.JoinEvent;
 import me.neovitalism.neoapi.lang.LangManager;
 import me.neovitalism.neoapi.modloading.NeoMod;
 import me.neovitalism.neoapi.modloading.config.Configuration;
@@ -12,8 +12,6 @@ import me.neovitalism.neospawnpoints.spawnpoints.SpawnManager;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnPoint;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,12 +44,10 @@ public class NeoSpawnPoints extends NeoMod {
             new SetSpawnCommand(this, dispatcher);
             new DeleteSpawnCommand(this, dispatcher);
         });
-        FirstJoinEvent.EVENT.register((handler, sender, server) -> {
-            if(firstJoinSpawn != null) firstJoinSpawn.teleport(handler.getPlayer());
-        });
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            ServerPlayerEntity player = handler.getPlayer();
-            if(forceSpawnOnJoin) {
+        JoinEvent.EVENT.register((player, hasJoinedBefore) -> {
+            if(firstJoinSpawn != null && !hasJoinedBefore) {
+                firstJoinSpawn.teleport(player);
+            } else if(forceSpawnOnJoin) {
                 SpawnPoint playerSpawn = SpawnManager.determineSpawnPoint(player);
                 if(playerSpawn != null) {
                     playerSpawn.teleport(player);

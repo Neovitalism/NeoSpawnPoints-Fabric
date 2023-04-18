@@ -27,7 +27,7 @@
     "fabric-api": "*",
     "minecraft": "~1.19",
     "java": ">=17",
-    "neoapi": ">=0.6.8"
+    "neoapi": ">=1.0.8"
   },
 
   "suggests": {
