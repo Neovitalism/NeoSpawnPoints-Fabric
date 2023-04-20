@@ -72,7 +72,7 @@ public class SpawnManager {
         if(spawnPoints.keySet().size() == 0) {
             try {
                 FileOutputStream outputStream = new FileOutputStream(spawnConfigFile);
-                InputStream in = NeoMod.class.getClassLoader().getResourceAsStream("spawnpoints.yml");
+                InputStream in = NeoMod.class.getClassLoader().getResourceAsStream("neospawnpoints/spawnpoints.yml");
                 in.transferTo(outputStream);
             } catch (IOException e) {
                 NeoSpawnPoints.LOGGER.error("Something went wrong saving spawns!");
