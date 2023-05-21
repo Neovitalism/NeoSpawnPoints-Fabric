@@ -34,9 +34,7 @@ public class DeleteSpawnCommand implements CommandBase {
                 .requires(serverCommandSource ->
                         NeoMod.checkForPermission(serverCommandSource, "neospawnpoints.delspawn", 4))
                 .then(argument("spawn-point", StringArgumentType.string())
-                        .suggests((context, builder) -> {
-                            return new ListSuggestionProvider("spawn-point", SpawnManager.getAllSpawnNames()).getSuggestions(context, builder);
-                        })
+                        .suggests((context, builder) -> new ListSuggestionProvider("spawn-point", SpawnManager.getAllSpawnNames()).getSuggestions(context, builder))
                         .executes(context -> {
                             String spawnName = context.getArgument("spawn-point", String.class);
                             if (SpawnManager.hasSpawn(spawnName)) {

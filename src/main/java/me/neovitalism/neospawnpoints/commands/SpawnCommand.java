@@ -103,9 +103,7 @@ public class SpawnCommand implements CommandBase {
                             return Command.SINGLE_SUCCESS;
                         })
                         .then(argument("spawn-point", StringArgumentType.string())
-                                .suggests((context, builder) -> {
-                                    return new ListSuggestionProvider("spawn-point", SpawnManager.getAllSpawnNames()).getSuggestions(context, builder);
-                                })
+                                .suggests((context, builder) -> new ListSuggestionProvider("spawn-point", SpawnManager.getAllSpawnNames()).getSuggestions(context, builder))
                                 .executes(context -> {
                                     String playerName = context.getArgument("player", String.class);
                                     if(!playerName.equals("all")) {

@@ -81,7 +81,7 @@ public class SpawnManager {
             Configuration spawnConfig = new Configuration();
             Configuration spawnPointConfig = new Configuration();
             for(String spawnName : spawnPoints.keySet()) {
-                spawnPointConfig.set(spawnName, spawnPoints.get(spawnName).createConfig());
+                spawnPointConfig.set(spawnName, spawnPoints.get(spawnName).toConfiguration());
             }
             spawnConfig.set("SpawnPoints", spawnPointConfig);
             instance.saveConfig(spawnConfigFile, spawnConfig);
@@ -94,11 +94,11 @@ public class SpawnManager {
         for(String spawnName : spawnPoints.keySet()) {
             if(NeoMod.checkForPermission(player, "neospawnpoints.spawn." + spawnName, 1)) {
                 SpawnPoint spawn = spawnPoints.get(spawnName);
-                if(spawn.priority() > highestPriority) {
-                    highestPriority = spawn.priority();
+                if(spawn.getPriority() > highestPriority) {
+                    highestPriority = spawn.getPriority();
                     possibleTeleports.clear();
                     possibleTeleports.add(spawn);
-                } else if(spawn.priority() == highestPriority) {
+                } else if(spawn.getPriority() == highestPriority) {
                     possibleTeleports.add(spawn);
                 }
             }
