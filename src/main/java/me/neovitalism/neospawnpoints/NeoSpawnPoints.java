@@ -1,6 +1,6 @@
 package me.neovitalism.neospawnpoints;
 
-import me.neovitalism.neoapi.events.JoinEvent;
+import me.neovitalism.neoapi.events.PlayerEvents;
 import me.neovitalism.neoapi.lang.LangManager;
 import me.neovitalism.neoapi.modloading.NeoMod;
 import me.neovitalism.neoapi.modloading.config.Configuration;
@@ -44,7 +44,7 @@ public class NeoSpawnPoints extends NeoMod {
             new SetSpawnCommand(this, dispatcher);
             new DeleteSpawnCommand(this, dispatcher);
         });
-        JoinEvent.EVENT.register((player, hasJoinedBefore) -> {
+        PlayerEvents.JOIN.register((player, hasJoinedBefore) -> {
             if(firstJoinSpawn != null && !hasJoinedBefore) {
                 firstJoinSpawn.teleport(player);
             } else if(forceSpawnOnJoin) {
