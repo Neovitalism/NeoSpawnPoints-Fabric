@@ -19,8 +19,8 @@ dependencies {
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation 'net.kyori:adventure-text-minimessage:4.13.0'
-    modImplementation "net.kyori:adventure-platform-fabric:5.5.1"
+    implementation 'net.kyori:adventure-text-minimessage:4.14.0'
+    modImplementation 'net.kyori:adventure-platform-fabric:5.8.0'
     modImplementation include(files("libs/NeoAPI-${project.neoapi_version}.jar"))
     compileOnly 'net.luckperms:api:5.4'
 }

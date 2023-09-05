@@ -52,7 +52,7 @@ public class SpawnManager {
     public static SpawnPoint createSpawn(NeoMod instance, ServerPlayerEntity player, String spawnName, int priority) {
         SpawnPoint newSpawn = new SpawnPoint(
                 spawnName,
-                player.getWorld(),
+                player.getServerWorld(),
                 player.getX(),
                 player.getY(),
                 player.getZ(),
