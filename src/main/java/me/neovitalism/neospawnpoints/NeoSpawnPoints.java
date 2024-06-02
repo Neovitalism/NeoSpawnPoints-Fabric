@@ -44,16 +44,6 @@ public class NeoSpawnPoints extends NeoMod {
             new SetSpawnCommand(this, dispatcher);
             new DeleteSpawnCommand(this, dispatcher);
         });
-        PlayerEvents.JOIN.register((player, hasJoinedBefore) -> {
-            if(firstJoinSpawn != null && !hasJoinedBefore) {
-                firstJoinSpawn.teleport(player);
-            } else if(forceSpawnOnJoin) {
-                SpawnPoint playerSpawn = SpawnManager.determineSpawnPoint(player);
-                if(playerSpawn != null) {
-                    playerSpawn.teleport(player);
-                }
-            }
-        });
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
             if(forceSpawnOnDeath || (spawnNoRespawn && (newPlayer.getSpawnPointPosition() == null))) {
                 SpawnPoint spawn = SpawnManager.determineSpawnPoint(newPlayer);
@@ -85,8 +75,16 @@ public class NeoSpawnPoints extends NeoMod {
         forceSpawnOnDeath = config.getBoolean("Force-Spawn-On-Death", false);
     }
 
-    private SpawnPoint firstJoinSpawn = null;
-    private boolean forceSpawnOnJoin = false;
+    private static SpawnPoint firstJoinSpawn = null;
+    private static boolean forceSpawnOnJoin = false;
     private boolean spawnNoRespawn = true;
     private boolean forceSpawnOnDeath = false;
+
+    public static SpawnPoint getFirstJoinSpawn() {
+        return firstJoinSpawn;
+    }
+
+    public static boolean shouldForceSpawnOnJoin() {
+        return forceSpawnOnJoin;
+    }
 }

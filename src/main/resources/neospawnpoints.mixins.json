@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.neovitalism.neospawnpoints.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "PlayerManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "refmap": "NeoSpawnPoints-refmap.json"
+}

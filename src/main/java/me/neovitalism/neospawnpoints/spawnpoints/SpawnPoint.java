@@ -2,6 +2,9 @@ package me.neovitalism.neospawnpoints.spawnpoints;
 
 import me.neovitalism.neoapi.modloading.config.Configuration;
 import me.neovitalism.neoapi.objects.Location;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtDouble;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.server.world.ServerWorld;
 
 import java.util.Map;
@@ -32,5 +35,17 @@ public class SpawnPoint extends Location {
 
     public int getPriority() {
         return priority;
+    }
+
+    public NbtCompound includeSpawnNBT(NbtCompound nbtCompound) {
+        if(nbtCompound == null) nbtCompound = new NbtCompound();
+
+        nbtCompound.putString("Dimension", this.getWorld().getRegistryKey().getValue().toString());
+        NbtList listTag = new NbtList();
+        listTag.addElement(0, NbtDouble.of(this.getX()));
+        listTag.addElement(1, NbtDouble.of(this.getY()));
+        listTag.addElement(2, NbtDouble.of(this.getZ()));
+        nbtCompound.put("Pos", listTag);
+        return nbtCompound;
     }
 }

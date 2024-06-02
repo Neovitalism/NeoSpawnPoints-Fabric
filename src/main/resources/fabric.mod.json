@@ -30,6 +30,10 @@
     "neoapi": ">=1.4.1"
   },
 
+  "mixins": [
+    "neospawnpoints.mixins.json"
+  ],
+
   "suggests": {
     "luckperms": ">=5.4.67"
   }
