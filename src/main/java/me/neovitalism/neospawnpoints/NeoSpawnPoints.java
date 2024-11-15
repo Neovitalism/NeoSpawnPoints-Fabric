@@ -1,25 +1,16 @@
 package me.neovitalism.neospawnpoints;
 
-import me.neovitalism.neoapi.events.PlayerEvents;
-import me.neovitalism.neoapi.lang.LangManager;
 import me.neovitalism.neoapi.modloading.NeoMod;
-import me.neovitalism.neoapi.modloading.config.Configuration;
+import me.neovitalism.neoapi.modloading.command.CommandRegistryInfo;
 import me.neovitalism.neospawnpoints.commands.DeleteSpawnCommand;
 import me.neovitalism.neospawnpoints.commands.NSPReloadCommand;
 import me.neovitalism.neospawnpoints.commands.SetSpawnCommand;
 import me.neovitalism.neospawnpoints.commands.SpawnCommand;
+import me.neovitalism.neospawnpoints.config.NSPConfig;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnManager;
-import me.neovitalism.neospawnpoints.spawnpoints.SpawnPoint;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 public class NeoSpawnPoints extends NeoMod {
-    public static final Logger LOGGER = LoggerFactory.getLogger("NeoSpawnPoints");
-    private LangManager langManager;
+    private static NeoSpawnPoints instance;
 
     @Override
     public String getModID() {
@@ -32,59 +23,28 @@ public class NeoSpawnPoints extends NeoMod {
     }
 
     @Override
-    public LangManager getLangManager() {
-        return langManager;
-    }
-
-    @Override
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            new NSPReloadCommand(this, dispatcher);
-            new SpawnCommand(this, dispatcher);
-            new SetSpawnCommand(this, dispatcher);
-            new DeleteSpawnCommand(this, dispatcher);
-        });
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            if(forceSpawnOnDeath || (spawnNoRespawn && (newPlayer.getSpawnPointPosition() == null))) {
-                SpawnPoint spawn = SpawnManager.determineSpawnPoint(newPlayer);
-                if(spawn != null) {
-                    spawn.teleport(newPlayer);
-                }
-            }
-        });
-        LOGGER.info("Loaded!");
+        super.onInitialize();
+        NeoSpawnPoints.instance = this;
+        SpawnManager.initListener();
+        this.getLogger().info("Loaded!");
     }
 
     @Override
     public void configManager() {
-        Configuration config = getDefaultConfig();
-        this.langManager = new LangManager(config.getSection("Lang"));
-        try {
-            SpawnManager.setSpawnConfigFile(getOrCreateConfigurationFile("spawnpoints.yml"));
-        } catch (IOException e) {
-            LOGGER.error("Something went wrong fetching the spawnpoints.yml file!");
-        }
-        Configuration spawnConfig = getConfig("spawnpoints.yml");
-        if(spawnConfig.contains("SpawnPoints")) {
-            SpawnManager.loadSpawns(spawnConfig.getSection("SpawnPoints"));
-        }
-        String firstJoinSpawnName = config.getString("First-Join-Spawn", "");
-        firstJoinSpawn = SpawnManager.getSpawn(firstJoinSpawnName);
-        forceSpawnOnJoin = config.getBoolean("Force-Spawn-On-Join", false);
-        spawnNoRespawn = config.getBoolean("Spawn-No-Respawn", true);
-        forceSpawnOnDeath = config.getBoolean("Force-Spawn-On-Death", false);
+        NSPConfig.reload(this.getConfig("config.yml", true));
+        SpawnManager.loadSpawns(this.getConfig("spawnpoints.yml", true));
     }
 
-    private static SpawnPoint firstJoinSpawn = null;
-    private static boolean forceSpawnOnJoin = false;
-    private boolean spawnNoRespawn = true;
-    private boolean forceSpawnOnDeath = false;
-
-    public static SpawnPoint getFirstJoinSpawn() {
-        return firstJoinSpawn;
+    @Override
+    public void registerCommands(CommandRegistryInfo info) {
+        new NSPReloadCommand(info.getDispatcher());
+        new SpawnCommand(info.getDispatcher());
+        new SetSpawnCommand(info.getDispatcher());
+        new DeleteSpawnCommand(info.getDispatcher());
     }
 
-    public static boolean shouldForceSpawnOnJoin() {
-        return forceSpawnOnJoin;
+    public static NeoSpawnPoints inst() {
+        return NeoSpawnPoints.instance;
     }
 }

@@ -1,51 +1,37 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
-    id 'maven-publish'
+    id 'fabric-loom' version '1.8-SNAPSHOT'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
-archivesBaseName = 'NeoSpawnPoints'
 version = "${project.mod_version}"
-group = 'me.neovitalism.neospawnpoints'
+group = "${project.maven_group}"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation 'net.kyori:adventure-text-minimessage:4.14.0'
-    modImplementation 'net.kyori:adventure-platform-fabric:5.8.0'
-    modImplementation include(files("libs/NeoAPI-${project.neoapi_version}.jar"))
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    implementation 'net.kyori:adventure-text-minimessage:4.17.0'
+    modImplementation 'net.kyori:adventure-platform-fabric:5.14.1'
+    modImplementation include("me.neovitalism:NeoAPI:${project.neo_api_version}")
     compileOnly 'net.luckperms:api:5.4'
 }
 
+Map<String, String> resourceProperties = new HashMap<>()
+resourceProperties.put("version", (String) project.version)
+resourceProperties.put("loader_version", project.loader_version)
+resourceProperties.put("minecraft_version", project.minecraft_version)
+resourceProperties.put("neo_api_version", project.neo_api_version)
+
 processResources {
-    inputs.property "version", project.version
     filesMatching("fabric.mod.json") {
-        expand "version": project.version
+        expand resourceProperties
     }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
-}
-
-java {
-    withSourcesJar()
-}
-
-jar {
-    from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}"}
-    }
-}
-
-remapJar {
-    nestedJars.from file("libs/NeoAPI-${project.neoapi_version}.jar")
 }

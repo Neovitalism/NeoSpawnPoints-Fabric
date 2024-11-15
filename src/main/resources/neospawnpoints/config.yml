@@ -1,18 +1,8 @@
 First-Join-Spawn: ''
-# The spawn players will teleport to when they join for the first time. Leave blank to disable.
-
 Spawn-No-Respawn: true
-# Whether or not players get teleported to their spawn when they die and have no other spawn point.
-# This may interfere with some plugins similar features, like setting /home to their spawnpoint. Let me know if it does.
-
 Force-Spawn-On-Death: false
-# Whether or not the player will get teleported to their spawn no matter what on death.
-
 Force-Spawn-On-Join: false
-# Whether or not the player will always be teleported to their spawn on join.
-
 Lang:
-# Remove any key or set any message to "" to disable that message.
   Prefix: '&#696969[&#9632faN&#9831efe&#9a30e4o&#9b2ed9S&#9d2dcep&#9f2cc3a&#a12bb8w&#a229adn&#a428a2P&#a62797o&#a8268ci&#a92481n&#ab2376t&#ad226bs&#696969]&f '
   Invalid-Spawn-Point: "&c'&4{input}&c' is not a valid spawn! Try using one from tab complete."
   Invalid-Player: "&c'&4{input}&c' is not a valid player. Make sure they're online!"

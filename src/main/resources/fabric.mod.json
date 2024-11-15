@@ -23,11 +23,11 @@
   },
 
   "depends": {
-    "fabricloader": ">=0.14.21",
+    "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
-    "minecraft": "~1.20",
-    "java": ">=17",
-    "neoapi": ">=1.4.1"
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21",
+    "neoapi": ">=${neo_api_version}"
   },
 
   "mixins": [
@@ -35,6 +35,6 @@
   ],
 
   "suggests": {
-    "luckperms": ">=5.4.67"
+    "luckperms": ">=5.4.139"
   }
 }

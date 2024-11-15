@@ -1,13 +1,14 @@
 package me.neovitalism.neospawnpoints.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.tree.LiteralCommandNode;
-import me.neovitalism.neoapi.modloading.NeoMod;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import me.neovitalism.neoapi.modloading.command.CommandBase;
-import me.neovitalism.neoapi.utils.ChatUtil;
+import me.neovitalism.neoapi.permissions.NeoPermission;
+import me.neovitalism.neoapi.utils.ColorUtil;
+import me.neovitalism.neospawnpoints.NeoSpawnPoints;
+import me.neovitalism.neospawnpoints.config.NSPConfig;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnManager;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnPoint;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,58 +18,43 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
 
-public class SetSpawnCommand implements CommandBase {
-    public SetSpawnCommand(NeoMod instance, CommandDispatcher<ServerCommandSource> dispatcher) {
-        register(instance, dispatcher);
+public class SetSpawnCommand extends CommandBase {
+    public SetSpawnCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
+        super(dispatcher, "setspawn");
     }
 
     @Override
-    public String[] getCommandAliases() {
-        return new String[0];
+    public NeoPermission[] getBasePermissions() {
+        return NeoPermission.of("neospawnpoints.setspawn").toArray();
     }
 
     @Override
-    public LiteralCommandNode<ServerCommandSource> register(NeoMod instance, CommandDispatcher<ServerCommandSource> dispatcher) {
-        Map<String, String> replacements = new HashMap<>();
-        return dispatcher.register(literal("setspawn")
-                .requires(serverCommandSource ->
-                        NeoMod.checkForPermission(serverCommandSource, "neospawnpoints.setspawn", 4))
-                .then(argument("spawn-point", StringArgumentType.string())
-                        .executes(context -> {
-                            ServerPlayerEntity player = context.getSource().getPlayer();
-                            if(player != null) {
-                                String spawnName = context.getArgument("spawn-point", String.class);
-                                if (SpawnManager.hasSpawn(spawnName)) {
-                                    replacements.put("{input}", spawnName);
-                                    ChatUtil.sendPrettyMessage(instance, context.getSource(), false, "Spawn-Already-Exists", replacements);
-                                } else createSpawn(instance, player, spawnName, 0);
-                            } else {
-                                ChatUtil.sendPrettyMessage(context.getSource(), instance.getModPrefix(), "&cThis command can only be used by a player!");
-                            }
-                            return Command.SINGLE_SUCCESS;
-                        })
-                        .then(argument("priority", IntegerArgumentType.integer())
-                                .executes(context -> {
-                                    ServerPlayerEntity player = context.getSource().getPlayer();
-                                    if(player != null) {
-                                        String spawnName = context.getArgument("spawn-point", String.class);
-                                        if (SpawnManager.hasSpawn(spawnName)) {
-                                            replacements.put("{input}", spawnName);
-                                            ChatUtil.sendPrettyMessage(instance, context.getSource(), false, "Spawn-Already-Exists", replacements);
-                                        } else createSpawn(instance, player, spawnName, context.getArgument("priority", Integer.class));
-                                    } else {
-                                        ChatUtil.sendPrettyMessage(context.getSource(), instance.getModPrefix(), "&cThis command can only be used by a player!");
-                                    }
-                                    return Command.SINGLE_SUCCESS;
-                                }))));
+    public LiteralArgumentBuilder<ServerCommandSource> getCommand(LiteralArgumentBuilder<ServerCommandSource> command) {
+        return command.then(argument("spawn-point", StringArgumentType.string())
+                .executes(context -> this.execute(context.getSource(),
+                        context.getArgument("spawn-point", String.class), 0))
+                .then(argument("priority", IntegerArgumentType.integer())
+                        .executes(context -> this.execute(context.getSource(),
+                                context.getArgument("spawn-point", String.class),
+                                context.getArgument("priority", Integer.class)))));
     }
 
-    private void createSpawn(NeoMod instance, ServerPlayerEntity player, String spawnName, int priority) {
+    private int execute(ServerCommandSource source, String spawnName, int priority) {
+        ServerPlayerEntity player = source.getPlayer();
+        if (player == null) {
+            source.sendMessage(ColorUtil.parseColour(NeoSpawnPoints.inst().getModPrefix() +
+                    "&cThis command can only be used by a player!"));
+            return 1;
+        }
+        if (SpawnManager.hasSpawn(spawnName)) {
+            NSPConfig.getLangManager().sendLang(player, "Spawn-Already-Exists", Map.of("{input}", spawnName));
+            return 1;
+        }
         Map<String, String> replacements = new HashMap<>();
-        SpawnPoint newSpawn = SpawnManager.createSpawn(instance, player, spawnName, priority);
+        SpawnPoint newSpawn = SpawnManager.createSpawn(player, spawnName, priority);
         newSpawn.addReplacements(replacements);
-        ChatUtil.sendPrettyMessage(instance, player, false, "Spawn-Created", replacements);
+        NSPConfig.getLangManager().sendLang(player, "Spawn-Created", replacements);
+        return 1;
     }
 }
