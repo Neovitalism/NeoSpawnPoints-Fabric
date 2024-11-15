@@ -66,8 +66,10 @@ public class SpawnManager {
 
     public static void loadSpawns(Configuration config) {
         SpawnManager.SPAWN_POINTS.clear();
-        for (String key : config.getKeys()) {
-            Configuration spawnConfig = config.getSection(key);
+        Configuration spawnPointsConfig = config.getSection("SpawnPoints");
+        if (spawnPointsConfig == null) return;
+        for (String key : spawnPointsConfig.getKeys()) {
+            Configuration spawnConfig = spawnPointsConfig.getSection(key);
             if (spawnConfig == null) continue;
             SpawnManager.SPAWN_POINTS.put(key, new SpawnPoint(key, spawnConfig));
         }
