@@ -32,8 +32,8 @@ public class NeoSpawnPoints extends NeoMod {
 
     @Override
     public void configManager() {
-        NSPConfig.reload(this.getConfig("config.yml", true));
         SpawnManager.loadSpawns(this.getConfig("spawnpoints.yml", true));
+        NSPConfig.reload(this.getConfig("config.yml", true));
     }
 
     @Override
