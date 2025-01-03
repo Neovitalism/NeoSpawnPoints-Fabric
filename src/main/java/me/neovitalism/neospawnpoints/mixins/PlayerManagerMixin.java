@@ -21,7 +21,7 @@ public class PlayerManagerMixin {
         SpawnPoint firstJoinSpawn = NSPConfig.getFirstJoinSpawn();
         boolean joinedBefore = PlayerManager.containsTag(player, "neoapi.joinedBefore");
         if (firstJoinSpawn != null && !joinedBefore) {
-            cir.setReturnValue(this.addSpawnToNBT(player, new NbtCompound(), firstJoinSpawn));
+            cir.setReturnValue(this.addSpawnToNBT(player, cir.getReturnValue().orElse(new NbtCompound()), firstJoinSpawn));
         } else if (NSPConfig.shouldForceSpawnOnJoin()) {
             SpawnPoint playerSpawn = SpawnManager.determineSpawnPoint(player);
             if (playerSpawn != null) cir.setReturnValue(this.addSpawnToNBT(player,
