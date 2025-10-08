@@ -6,18 +6,25 @@ import me.neovitalism.neospawnpoints.spawnpoints.SpawnManager;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnPoint;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
 @Mixin(net.minecraft.server.PlayerManager.class)
-public class PlayerManagerMixin {
-    @Inject(method = "loadPlayerData", at = @At("RETURN"), cancellable = true)
-    public void loadPlayerData(ServerPlayerEntity player, CallbackInfoReturnable<Optional<NbtCompound>> cir) {
+public abstract class PlayerManagerMixin {
+    @Inject(
+            method = "loadPlayerData",
+            at = @At("RETURN")
+            , cancellable = true
+    )
+    public void neoSpawnPoints$loadPlayerData(ServerPlayerEntity player, CallbackInfoReturnable<Optional<NbtCompound>> cir) {
         SpawnPoint firstJoinSpawn = NSPConfig.getFirstJoinSpawn();
         boolean joinedBefore = PlayerManager.containsTag(player, "neoapi.joinedBefore");
         if (firstJoinSpawn != null && !joinedBefore) {
@@ -27,6 +34,20 @@ public class PlayerManagerMixin {
             if (playerSpawn != null) cir.setReturnValue(this.addSpawnToNBT(player,
                     cir.getReturnValue().orElse(new NbtCompound()), playerSpawn));
         }
+    }
+
+    @Redirect(
+            method = "respawnPlayer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/server/network/ServerPlayerEntity;getRespawnTarget(ZLnet/minecraft/world/TeleportTarget$PostDimensionTransition;)Lnet/minecraft/world/TeleportTarget;"
+            )
+    )
+    public TeleportTarget neoSpawnPoints$onPlayerRespawn(ServerPlayerEntity instance, boolean alive, TeleportTarget.PostDimensionTransition postDimensionTransition) {
+        if (!NSPConfig.shouldSpawnAfterDeath(instance)) return instance.getRespawnTarget(alive, postDimensionTransition);
+        SpawnPoint spawn = SpawnManager.determineSpawnPoint(instance);
+        if (spawn != null) return new TeleportTarget(spawn.getWorld(), spawn.toVec3d(), Vec3d.ZERO, spawn.getYaw(), spawn.getPitch(), postDimensionTransition);
+        return instance.getRespawnTarget(alive, postDimensionTransition);
     }
 
     @Unique

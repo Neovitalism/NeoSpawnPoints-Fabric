@@ -26,7 +26,6 @@ public class NeoSpawnPoints extends NeoMod {
     public void onInitialize() {
         super.onInitialize();
         NeoSpawnPoints.instance = this;
-        SpawnManager.initListener();
         this.getLogger().info("Loaded!");
     }
 

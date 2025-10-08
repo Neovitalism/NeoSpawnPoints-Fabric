@@ -4,8 +4,6 @@ import me.neovitalism.neoapi.config.Configuration;
 import me.neovitalism.neoapi.helpers.RandomHelper;
 import me.neovitalism.neoapi.permissions.NeoPermission;
 import me.neovitalism.neospawnpoints.NeoSpawnPoints;
-import me.neovitalism.neospawnpoints.config.NSPConfig;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.ArrayList;
@@ -42,14 +40,6 @@ public class SpawnManager {
         }
         if (possibleTeleports.isEmpty()) return null;
         return RandomHelper.getRandomValue(possibleTeleports);
-    }
-
-    public static void initListener() {
-        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
-            if (!NSPConfig.shouldSpawnAfterDeath(newPlayer)) return;
-            SpawnPoint spawn = SpawnManager.determineSpawnPoint(newPlayer);
-            if (spawn != null) spawn.teleport(newPlayer);
-        });
     }
 
     public static SpawnPoint createSpawn(ServerPlayerEntity player, String spawnName, int priority) {
