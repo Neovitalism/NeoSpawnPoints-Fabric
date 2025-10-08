@@ -7,6 +7,8 @@ import net.minecraft.nbt.NbtDouble;
 import net.minecraft.nbt.NbtFloat;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.TeleportTarget;
 
 import java.util.Map;
 
@@ -35,6 +37,10 @@ public class SpawnPoint extends Location {
 
     public int getPriority() {
         return this.priority;
+    }
+
+    public TeleportTarget toTeleportTarget(TeleportTarget.PostDimensionTransition transition) {
+        return new TeleportTarget(this.getWorld(), this.toVec3d(), Vec3d.ZERO, this.getYaw(), this.getPitch(), transition);
     }
 
     public void setNBTLocation(NbtCompound nbtCompound) {

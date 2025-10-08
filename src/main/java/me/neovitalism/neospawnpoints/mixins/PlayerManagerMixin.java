@@ -6,7 +6,6 @@ import me.neovitalism.neospawnpoints.spawnpoints.SpawnManager;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnPoint;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.TeleportTarget;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -43,11 +42,12 @@ public abstract class PlayerManagerMixin {
                     target = "Lnet/minecraft/server/network/ServerPlayerEntity;getRespawnTarget(ZLnet/minecraft/world/TeleportTarget$PostDimensionTransition;)Lnet/minecraft/world/TeleportTarget;"
             )
     )
-    public TeleportTarget neoSpawnPoints$onPlayerRespawn(ServerPlayerEntity instance, boolean alive, TeleportTarget.PostDimensionTransition postDimensionTransition) {
-        if (!NSPConfig.shouldSpawnAfterDeath(instance)) return instance.getRespawnTarget(alive, postDimensionTransition);
-        SpawnPoint spawn = SpawnManager.determineSpawnPoint(instance);
-        if (spawn != null) return new TeleportTarget(spawn.getWorld(), spawn.toVec3d(), Vec3d.ZERO, spawn.getYaw(), spawn.getPitch(), postDimensionTransition);
-        return instance.getRespawnTarget(alive, postDimensionTransition);
+    public TeleportTarget neoSpawnPoints$onPlayerRespawn(ServerPlayerEntity player, boolean alive, TeleportTarget.PostDimensionTransition transition) {
+        if (NSPConfig.forceSpawnOnDeath() || (NSPConfig.spawnNoRespawn() && (player.getSpawnPointPosition() == null || player.getRespawnTarget(alive, transition).missingRespawnBlock()))) {
+            SpawnPoint spawn = SpawnManager.determineSpawnPoint(player);
+            if (spawn != null) return spawn.toTeleportTarget(transition);
+        }
+        return player.getRespawnTarget(alive, transition);
     }
 
     @Unique

@@ -4,7 +4,6 @@ import me.neovitalism.neoapi.config.Configuration;
 import me.neovitalism.neoapi.lang.LangManager;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnManager;
 import me.neovitalism.neospawnpoints.spawnpoints.SpawnPoint;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 public class NSPConfig {
     private static SpawnPoint firstJoinSpawn = null;
@@ -31,8 +30,12 @@ public class NSPConfig {
         return NSPConfig.forceSpawnOnJoin;
     }
 
-    public static boolean shouldSpawnAfterDeath(ServerPlayerEntity player) {
-        return NSPConfig.forceSpawnOnDeath || (NSPConfig.spawnNoRespawn && (player.getSpawnPointPosition() == null));
+    public static boolean forceSpawnOnDeath() {
+        return NSPConfig.forceSpawnOnDeath;
+    }
+
+    public static boolean spawnNoRespawn() {
+        return NSPConfig.spawnNoRespawn;
     }
 
     public static LangManager getLangManager() {
